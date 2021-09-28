@@ -16,9 +16,9 @@
 //  *******************************************************
 #include "AT91SAM7S256.h"
 #include "board.h"
-#include "math.h"
-#include "stdlib.h"
-#include "string.h"
+//#include "math.h"
+//#include "stdlib.h"
+//#include "string.h"
 
 //  *******************************************************
 //                Function Prototypes
@@ -116,11 +116,12 @@ int	main (void) {
 	pAIC->AIC_IECR = (1<<AT91C_ID_FIQ); 				// Enable the FIQ interrupt in AIC Interrupt Enable Command Register
 	
 
+    /*
 	// Three functions from the libraries
 	a = strlen(pText);									// strlen( ) returns length of a string
 	x5 = fabs(y5);										// fabs( ) returns absolute value of a double
 	n = atol(DigitBuffer);								// atol( ) converts string to a long
-	
+	*/
 
 	// Setup timer0 to generate a 10 msec periodic interrupt
 	TimerSetup();

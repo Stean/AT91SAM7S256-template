@@ -8,12 +8,12 @@
 NAME = demo_at91sam7_p64_blink_flash
 
 # variables 
-CC      = arm-elf-gcc
-LD      = arm-elf-ld -v
-AR      = arm-elf-ar
-AS      = arm-elf-as
-CP      = arm-elf-objcopy
-OD		= arm-elf-objdump
+CC      = arm-none-eabi-gcc
+LD      = arm-none-eabi-ld -v
+AR      = arm-none-eabi-ar
+AS      = arm-none-eabi-as
+CP      = arm-none-eabi-objcopy
+OD		= arm-none-eabi-objdump
 
 CFLAGS  = -I./ -c -fno-common -O0 -g
 AFLAGS  = -ahls -mapcs-32 -o crt.o
@@ -88,11 +88,11 @@ blinker.o: blinker.c
 TARGET = main.bin
 
 # specify the directory where openocd executable and configuration files reside (note: use forward slashes /)
-OPENOCD_DIR = 'c:/Program Files/openocd-2007re141/bin/'
+OPENOCD_DIR = '/usr/bin/'
 
 # specify OpenOCD executable (pp is for the wiggler, ftd2xx is for the USB debuggers)
 #OPENOCD = $(OPENOCD_DIR)openocd-pp.exe
-OPENOCD = $(OPENOCD_DIR)openocd-ftd2xx.exe
+OPENOCD = $(OPENOCD_DIR)openocd
 
 # specify OpenOCD configuration file (pick the one for your device)
 #OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-wiggler-flash-program.cfg
