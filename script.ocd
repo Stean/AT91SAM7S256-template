@@ -54,33 +54,6 @@ proc load_ram_program {IMGFILE} {
     # halt the processor and wait
     reset halt
     
-    # select the core state
-    arm core_state arm
-
-    # set flash wait state (AT91C_MC_FMR)
-    mww 0xffffff60 0x00320100
-
-    # watchdog disable (AT91C_WDTC_WDMR)
-    mww 0xfffffd44 0xa0008000
-    
-    # enable main oscillator (AT91C_PMC_MOR)
-    mww 0xfffffc20 0xa0000601
-    wait 100
-
-    # set PLL register (AT91C_PMC_PLLR)
-    mww 0xfffffc2c 0x00480a0e
-    wait 200
-
-    # set master clock to PLL (AT91C_PMC_MCKR)
-    mww 0xfffffc30 0x7
-    wait 100
-
-    # enable user reset AT91C_RSTC_RMR
-    mww 0xfffffd08 0xa5000401
-
-    # force a peripheral RESET AT91C_RSTC_RCR
-    mww 0xfffffd00 0xa5000004
-
     # program the onchip flash
     load_image $IMGFILE 0x200000 bin
     wait 300
