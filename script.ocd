@@ -52,7 +52,7 @@ proc flash_program {IMGFILE} {
 
 proc load_ram_program {IMGFILE} {
     # halt the processor and wait
-    reset halt
+    reset init
     
     # program the onchip flash
     load_image $IMGFILE 0x200000 bin
