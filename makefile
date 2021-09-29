@@ -88,7 +88,7 @@ blinker.o: blinker.c
 TARGET = main.bin
 
 # specify the directory where openocd executable and configuration files reside (note: use forward slashes /)
-OPENOCD_DIR = '/usr/bin/'
+OPENOCD_DIR = /usr/bin/
 
 # specify OpenOCD executable (pp is for the wiggler, ftd2xx is for the USB debuggers)
 #OPENOCD = $(OPENOCD_DIR)openocd-pp.exe
@@ -97,11 +97,11 @@ OPENOCD = $(OPENOCD_DIR)openocd
 # specify OpenOCD configuration file (pick the one for your device)
 #OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-wiggler-flash-program.cfg
 #OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-jtagkey-flash-program.cfg
-OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-armusbocd-flash-program.cfg
+OPENOCD_FLAGS = --file script.ocd -c "flash_myfile $(TARGET)"
 
 # program the AT91SAM7S256 internal flash memory
 program: $(TARGET)
 	@echo "Flash Programming with OpenOCD..."			# display a message on the console
-	$(OPENOCD) -f $(OPENOCD_CFG)						# program the onchip FLASH here
+	$(OPENOCD) $(OPENOCD_FLAGS)						# program the onchip FLASH here
 	@echo "Flash Programming Finished."					# display a message on the console
 
