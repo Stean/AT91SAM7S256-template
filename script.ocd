@@ -8,7 +8,7 @@ source [find board/olimex_sam7_ex256.cfg]
 init
 targets
 
-proc flash_myfile {IMGFILE} {
+proc flash_program {IMGFILE} {
 	# halt the processor and wait
     reset halt
     
@@ -48,4 +48,8 @@ proc flash_myfile {IMGFILE} {
     
     # stop OpenOCD
     shutdown
+}
+
+proc load_ram_program {IMGFILE} {
+    # todo
 }

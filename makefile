@@ -17,7 +17,8 @@ OD		= arm-none-eabi-objdump
 
 CFLAGS  = -I./ -c -fno-common -O0 -g
 AFLAGS  = -ahls -mapcs-32 -o crt.o
-LFLAGS  =  -Map main.map -Tdemo_at91sam7_p64_blink_flash.cmd
+LFLAGS_flash =  -Map main.flash.map -Tdemo_at91sam7_p64_blink_flash.cmd
+LFLAGS_ram   =  -Map main.ram.map -Tdemo_at91sam7_p64_blink_ram.cmd
 CPFLAGS = --output-target=binary
 ODFLAGS	= -x --syms
 
@@ -26,18 +27,30 @@ OBJECTS = crt.o	main.o timerisr.o timersetup.o isrsupport.o lowlevelinit.o blink
 
 # make target called by Eclipse (Project -> Clean ...)
 clean:
-	-rm $(OBJECTS) crt.lst main.lst main.out main.bin main.hex main.map main.dmp
+	-rm $(OBJECTS) crt.lst main.lst main.*.out main.*.bin main.hex main.*.map main.*.dmp
 
          
 #make target called by Eclipse  (Project -> Build Project)
-all:  main.out
+all: main.flash.bin main.ram.bin
 	@ echo "...copying"
-	$(CP) $(CPFLAGS) main.out main.bin
-	$(OD) $(ODFLAGS) main.out > main.dmp
 
-main.out: $(OBJECTS) demo_at91sam7_p64_blink_flash.cmd 
-	@ echo "..linking"
-	$(LD) $(LFLAGS) -o main.out $(OBJECTS) libc.a libm.a libgcc.a 
+main.flash.bin: main.flash.out
+	@ echo "...copying flash version"
+	$(CP) $(CPFLAGS) main.flash.out main.flash.bin
+	$(OD) $(ODFLAGS) main.flash.out > main.flash.dmp
+
+main.ram.bin: main.ram.out
+	@ echo "...copying ram version"
+	$(CP) $(CPFLAGS) main.ram.out main.ram.bin
+	$(OD) $(ODFLAGS) main.ram.out > main.ram.dmp
+
+main.flash.out: $(OBJECTS) demo_at91sam7_p64_blink_flash.cmd 
+	@ echo "..linking flash version"
+	$(LD) $(LFLAGS_flash) -o main.flash.out $(OBJECTS) libc.a libm.a libgcc.a 
+
+main.ram.out: $(OBJECTS) demo_at91sam7_p64_blink_flash.cmd 
+	@ echo "..linking ram version"
+	$(LD) $(LFLAGS_ram) -o main.ram.out $(OBJECTS) libc.a libm.a libgcc.a 
 
 crt.o: crt.s
 	@ echo ".assembling"
@@ -85,7 +98,7 @@ blinker.o: blinker.c
 # **********************************************************************************************
 
 # specify output filename here (must be *.bin file)
-TARGET = main.bin
+TARGET_FLASH = main.flash.bin
 
 # specify the directory where openocd executable and configuration files reside (note: use forward slashes /)
 OPENOCD_DIR = /usr/bin/
@@ -97,11 +110,23 @@ OPENOCD = $(OPENOCD_DIR)openocd
 # specify OpenOCD configuration file (pick the one for your device)
 #OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-wiggler-flash-program.cfg
 #OPENOCD_CFG = $(OPENOCD_DIR)at91sam7s256-jtagkey-flash-program.cfg
-OPENOCD_FLAGS = --file script.ocd -c "flash_myfile $(TARGET)"
+OPENOCD_FLAGS = --file script.ocd -c "flash_myfile $(TARGET_FLASH)"
 
 # program the AT91SAM7S256 internal flash memory
-program: $(TARGET)
+flash: $(TARGET_FLASH)
 	@echo "Flash Programming with OpenOCD..."			# display a message on the console
-	$(OPENOCD) $(OPENOCD_FLAGS)						# program the onchip FLASH here
+	$(OPENOCD) --file script.ocd -c "flash_program $(TARGET_FLASH)" 	# program the onchip FLASH here
 	@echo "Flash Programming Finished."					# display a message on the console
 
+
+# *******************************************************
+# 					RAM LOADING 
+# *******************************************************
+
+# specify output filename here (must be *.bin file)
+TARGET_RAM = main.ram.bin
+
+load: $(TARGET_RAM)
+	@echo "Loading file into RAM with OpenOCD..."           # display a message on the console
+	$(OPENOCD) --file script.ocd -c "load_ram_program $(TARGET_RAM)"
+	@echo "Loading into RAM finished"
