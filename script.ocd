@@ -9,22 +9,43 @@ init
 targets
 
 proc flash_myfile {IMGFILE} {
-    reset halt					# halt the processor and wait
-    arm core_state arm				# select the core state
+	# halt the processor and wait
+    reset halt
+    
+    # select the core state
+    arm core_state arm
 
-    mww 0xffffff64 0x5a000004			# clear lock bit 0
-    mww 0xffffff64 0x5a002004			# clear lock bit 1
+    # clear lock bits 0 and 1
+    mww 0xffffff64 0x5a000004
+    mww 0xffffff64 0x5a002004
 
-    mww 0xffffff60 0x00320100			# set flash wait state (AT91C_MC_FMR)
-    mww 0xfffffd44 0xa0008000			# watchdog disable (AT91C_WDTC_WDMR)
-    mww 0xfffffc20 0xa0000601			# enable main oscillator (AT91C_PMC_MOR)
-    wait 100							# wait 100 ms
-    mww 0xfffffc2c 0x00480a0e			# set PLL register (AT91C_PMC_PLLR)
-    wait 200							# wait 200 ms
-    mww 0xfffffc30 0x7					# set master clock to PLL (AT91C_PMC_MCKR)
-    wait 100							# wait 100 ms
-    mww 0xfffffd08 0xa5000401			# enable user reset AT91C_RSTC_RMR
-    flash write_image {IMGFILE} 0x100000	# program the onchip flash
-    reset run								# reset processor
-    shutdown							# stop OpenOCD
+    # set flash wait state (AT91C_MC_FMR)
+    mww 0xffffff60 0x00320100
+
+    # watchdog disable (AT91C_WDTC_WDMR)
+    mww 0xfffffd44 0xa0008000
+    
+    # enable main oscillator (AT91C_PMC_MOR)
+    mww 0xfffffc20 0xa0000601
+    wait 100
+
+    # set PLL register (AT91C_PMC_PLLR)
+    mww 0xfffffc2c 0x00480a0e
+    wait 200
+
+    # set master clock to PLL (AT91C_PMC_MCKR)
+    mww 0xfffffc30 0x7
+    wait 100
+
+    # enable user reset AT91C_RSTC_RMR
+    mww 0xfffffd08 0xa5000401
+
+    # program the onchip flash
+    flash write_image $IMGFILE 0x100000
+
+    # reset processor
+    reset run
+    
+    # stop OpenOCD
+    shutdown
 }
