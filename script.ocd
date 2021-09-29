@@ -2,9 +2,13 @@
 #
 #	Programmer: James P Lynch
 #
+source [find interface/ftdi/olimex-jtag-tiny.cfg]
+source [find board/olimex_sam7_ex256.cfg]
 
-wait_halt							# halt the processor and wait
-armv4_5 core_state arm				# select the core state
+init
+targets
+reset halt					# halt the processor and wait
+arm core_state arm				# select the core state
 
 mww 0xffffff64 0x5a000004			# clear lock bit 0
 mww 0xffffff64 0x5a002004			# clear lock bit 1
@@ -18,7 +22,7 @@ wait 200							# wait 200 ms
 mww 0xfffffc30 0x7					# set master clock to PLL (AT91C_PMC_MCKR)
 wait 100							# wait 100 ms
 mww 0xfffffd08 0xa5000401			# enable user reset AT91C_RSTC_RMR
-flash write 0 main.bin 0x0			# program the onchip flash
+flash write_image main.bin 0x100000	# program the onchip flash
 reset								# reset processor
 shutdown							# stop OpenOCD
 
