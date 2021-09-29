@@ -5,6 +5,10 @@
 
 wait_halt							# halt the processor and wait
 armv4_5 core_state arm				# select the core state
+
+mww 0xffffff64 0x5a000004			# clear lock bit 0
+mww 0xffffff64 0x5a002004			# clear lock bit 1
+
 mww 0xffffff60 0x00320100			# set flash wait state (AT91C_MC_FMR)
 mww 0xfffffd44 0xa0008000			# watchdog disable (AT91C_WDTC_WDMR)
 mww 0xfffffc20 0xa0000601			# enable main oscillator (AT91C_PMC_MOR)
