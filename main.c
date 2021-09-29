@@ -37,53 +37,18 @@ extern	unsigned enableFIQ(void);
 //  *******************************************************
 //               Global Variables
 //  *******************************************************
-unsigned int	FiqCount = 0;		// global uninitialized variable		
-int				q;					// global uninitialized variable
-int				r;					// global uninitialized variable
-int				s;					// global uninitialized variable
-int				m = 2;				// global initialized variable
-int				n = 3;				// global initialized variable
-int				o = 6;				// global initialized variable
+unsigned int   FiqCount = 0;           // global uninitialized variable
 
-struct comms {
-	int		nBytes;
-	char	*pBuf;
-	char	Buffer[32];
-}  Channel = {5, &Channel.Buffer[0], {"Faster than a speeding bullet"}};
-
-int	main (void) {
-	
-	// lots of variables for debugging practice
-	int				a, b, c;							// uninitialized variables
-	char			d;									// uninitialized variable
-	int				w = 1;								// initialized variable
-	int				k = 2;								// initialized variable
-	static long		x = 5;								// static initialized variable
-	static char		y = 0x04;							// static initialized variable
-	const char		*pText = "The rain in Spain";		// initialized string pointer variable
-	struct EntryLock {									// initialized structure variable
-		long		Key;
-		int			nAccesses;
-		char		Name[17];
-	}  Access = {14705, 0, "Sophie Marceau"};		
-	unsigned long	j;									// loop counter (stack variable)
-	unsigned long	IdleCount = 0;						// idle loop blink counter (2x)
-	int				*p;									// pointer to 32-bit word
-	typedef void 	(*FnPtr)(void);						// create a "pointer to function" type
-	FnPtr 			pFnPtr;								// pointer to a function
-	double			x5;									// variable to test library function
-	double			y5 = -172.451;						// variable to test library function
-	const char 		DigitBuffer[] = "16383";			// variable to test library function
-	long			n;									// variable to test library function
-	
+int    main (void) {
+	int i,j;
 	// Initialize the Atmel AT91SAM7S256 (watchdog, PLL clock, default interrupts, etc.)
 	LowLevelInit();
 	
-
+/*
 	// enable the Timer0 peripheral clock
 	volatile AT91PS_PMC	pPMC = AT91C_BASE_PMC;			// pointer to PMC data structure
 	pPMC->PMC_PCER = (1<<AT91C_ID_TC0);					// enable Timer0 peripheral clock
-
+*/
 
 	// Set up the LEDs (PA0 - PA3)
 	volatile AT91PS_PIO	pPIO = AT91C_BASE_PIOA;			// pointer to PIO data structure
@@ -95,7 +60,7 @@ int	main (void) {
 	// Select PA19 (pushbutton) to be FIQ function (Peripheral B)
 	pPIO->PIO_BSR = SW1_MASK;
 	
-
+/*
 	// Set up the AIC  registers for Timer 0  
 	volatile AT91PS_AIC	pAIC = AT91C_BASE_AIC;			// pointer to AIC data structure
 	pAIC->AIC_IDCR = (1<<AT91C_ID_TC0);					// Disable timer 0 interrupt in AIC Interrupt Disable Command Register			
@@ -114,7 +79,7 @@ int	main (void) {
 	pAIC->AIC_ICCR = (1<<AT91C_ID_FIQ); 				// Clear the FIQ interrupt in AIC Interrupt Clear Command Register
 	pAIC->AIC_IDCR = (0<<AT91C_ID_FIQ);					// Remove disable FIQ interrupt in AIC Interrupt Disable Command Register			
 	pAIC->AIC_IECR = (1<<AT91C_ID_FIQ); 				// Enable the FIQ interrupt in AIC Interrupt Enable Command Register
-	
+*/	
 
     /*
 	// Three functions from the libraries
@@ -124,22 +89,24 @@ int	main (void) {
 	*/
 
 	// Setup timer0 to generate a 10 msec periodic interrupt
-	TimerSetup();
+//	TimerSetup();
 
+/*
 	// enable interrupts
 	enableIRQ();
 	enableFIQ();
+*/
 
 	// endless blink loop
 	while (1) {
-		if  ((pPIO->PIO_ODSR & LED1) == LED1)			// read previous state of LED1
-			pPIO->PIO_CODR = LED1;						// turn LED1 (DS1) on	
+		if  ((pPIO->PIO_ODSR & LED2) == LED2)			// read previous state of LED1
+			pPIO->PIO_CODR = LED2;						// turn LED1 (DS1) on	
 		else
-			pPIO->PIO_SODR = LED1;						// turn LED1 (DS1) off
+			pPIO->PIO_SODR = LED2;						// turn LED1 (DS1) off
 		
-		for (j = 1000000; j != 0; j-- );				// wait 1 second 1000000
+		for (j = 10000000; j != 0; j-- );				// wait 1 second 1000000
 	
-		IdleCount++;									// count # of times through the idle loop
+		//IdleCount++;									// count # of times through the idle loop
 		pPIO->PIO_SODR = LED3;							// turn LED3 (DS3) off
 											
 		// uncomment following four lines to cause a data abort(3 blink code)
