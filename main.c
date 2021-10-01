@@ -16,9 +16,6 @@
 //  *******************************************************
 #include "AT91SAM7S256.h"
 #include "board.h"
-//#include "math.h"
-//#include "stdlib.h"
-//#include "string.h"
 
 //  *******************************************************
 //                Function Prototypes
@@ -37,89 +34,27 @@ extern	unsigned enableFIQ(void);
 //  *******************************************************
 //               Global Variables
 //  *******************************************************
-unsigned int   FiqCount = 0;           // global uninitialized variable
 
-int    main (void) {
-	int i,j;
+// Place here
+
+int main (void) {
 	// Initialize the Atmel AT91SAM7S256 (watchdog, PLL clock, default interrupts, etc.)
 	LowLevelInit();
 	
-/*
-	// enable the Timer0 peripheral clock
-	volatile AT91PS_PMC	pPMC = AT91C_BASE_PMC;			// pointer to PMC data structure
-	pPMC->PMC_PCER = (1<<AT91C_ID_TC0);					// enable Timer0 peripheral clock
-*/
-
 	// Set up the LEDs (PA0 - PA3)
 	volatile AT91PS_PIO	pPIO = AT91C_BASE_PIOA;			// pointer to PIO data structure
 	pPIO->PIO_PER = LED_MASK | SW1_MASK;				// PIO Enable Register - allow PIO to control pins P0 - P3 and pin 19
-	pPIO->PIO_OER = LED_MASK;							// PIO Output Enable Register - sets pins P0 - P3 to outputs
-	pPIO->PIO_SODR = LED_MASK;							// PIO Set Output Data Register - turns off the four LEDs
+	pPIO->PIO_OER = LED_MASK;			        		// PIO Output Enable Register - sets pins P0 - P3 to outputs
+	pPIO->PIO_SODR = LED_MASK;				        	// PIO Set Output Data Register - turns off the four LEDs
 	
-
-	// Select PA19 (pushbutton) to be FIQ function (Peripheral B)
-	pPIO->PIO_BSR = SW1_MASK;
-	
-/*
-	// Set up the AIC  registers for Timer 0  
-	volatile AT91PS_AIC	pAIC = AT91C_BASE_AIC;			// pointer to AIC data structure
-	pAIC->AIC_IDCR = (1<<AT91C_ID_TC0);					// Disable timer 0 interrupt in AIC Interrupt Disable Command Register			
-	pAIC->AIC_SVR[AT91C_ID_TC0] =						// Set the TC0 IRQ handler address in AIC Source 
-    	(unsigned int)Timer0IrqHandler;        			// Vector Register[12]
-	pAIC->AIC_SMR[AT91C_ID_TC0] =						// Set the interrupt source type and priority 
-   		(AT91C_AIC_SRCTYPE_INT_HIGH_LEVEL | 0x4 ); 		// in AIC Source Mode Register[12]
-	pAIC->AIC_ICCR = (1<<AT91C_ID_TC0); 				// Clear the TC0 interrupt in AIC Interrupt Clear Command Register
-	pAIC->AIC_IDCR = (0<<AT91C_ID_TC0);					// Remove disable timer 0 interrupt in AIC Interrupt Disable Command Reg			
-	pAIC->AIC_IECR = (1<<AT91C_ID_TC0); 				// Enable the TC0 interrupt in AIC Interrupt Enable Command Register
-	
-	// Set up the AIC registers for FIQ (pushbutton SW1)
-	pAIC->AIC_IDCR = (1<<AT91C_ID_FIQ);					// Disable FIQ interrupt in AIC Interrupt Disable Command Register			
-	pAIC->AIC_SMR[AT91C_ID_FIQ] =						// Set the interrupt source type in AIC Source 
-    	(AT91C_AIC_SRCTYPE_INT_POSITIVE_EDGE);  		// Mode Register[0]
-	pAIC->AIC_ICCR = (1<<AT91C_ID_FIQ); 				// Clear the FIQ interrupt in AIC Interrupt Clear Command Register
-	pAIC->AIC_IDCR = (0<<AT91C_ID_FIQ);					// Remove disable FIQ interrupt in AIC Interrupt Disable Command Register			
-	pAIC->AIC_IECR = (1<<AT91C_ID_FIQ); 				// Enable the FIQ interrupt in AIC Interrupt Enable Command Register
-*/	
-
-    /*
-	// Three functions from the libraries
-	a = strlen(pText);									// strlen( ) returns length of a string
-	x5 = fabs(y5);										// fabs( ) returns absolute value of a double
-	n = atol(DigitBuffer);								// atol( ) converts string to a long
-	*/
-
-	// Setup timer0 to generate a 10 msec periodic interrupt
-//	TimerSetup();
-
-/*
-	// enable interrupts
-	enableIRQ();
-	enableFIQ();
-*/
-
 	// endless blink loop
 	while (1) {
-		if  ((pPIO->PIO_ODSR & LED2) == LED2)			// read previous state of LED1
-			pPIO->PIO_CODR = LED2;						// turn LED1 (DS1) on	
+		if  ((pPIO->PIO_ODSR & LED1) == LED1)	    	// read previous state of LED1
+			pPIO->PIO_CODR = LED1;			        	// turn LED1 (DS1) on	
 		else
-			pPIO->PIO_SODR = LED2;						// turn LED1 (DS1) off
+			pPIO->PIO_SODR = LED1;		        		// turn LED1 (DS1) off
 		
-		for (j = 10000000; j != 0; j-- );				// wait 1 second 1000000
-	
-		//IdleCount++;									// count # of times through the idle loop
-		pPIO->PIO_SODR = LED3;							// turn LED3 (DS3) off
-											
-		// uncomment following four lines to cause a data abort(3 blink code)
-		//if  (IdleCount >= 10) {						// let it blink 5 times then crash
-		//	p = (int *)0x800000;						// this address doesn't exist
-		//	*p = 1234;									// attempt to write data to invalid address
-		//}
-		
-		// uncomment following four lines to cause a prefetch abort (two blinks)
-		//if  (IdleCount >= 10) {						// let it blink 5 times then crash
-		//	pFnPtr = (FnPtr)0x800000;					// this address doesn't exist
-		//	pFnPtr();									// attempt to call a function at a illegal address
-		//}
+		for (int j = 1000000; j != 0; j-- );			// wait 1 second 1000000
 	}
 }
 

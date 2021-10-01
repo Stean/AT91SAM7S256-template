@@ -82,52 +82,6 @@ _vec_irq:		b           AT91F_Irq_Handler		/* Interrupt Request (IRQ) vector		*/
 _vec_fiq:		                         			/* Fast interrupt request (FIQ) vector	*/
 
 /* ======================================================================== */
-/* Function: 			AT91F_Fiq_Handler	       			 				*/
-/*                                                                        	*/
-/* The FIQ interrupt asserts when switch SW1 is pressed.                    */
-/*																			*/
-/* This simple FIQ handler turns on LED3 (Port PA2). The LED3 will be       */
-/* turned off by the background loop in main() thus giving a visual         */
-/* indication that the interrupt has occurred.                              */
-/*																			*/
-/* This FIQ_Handler supports non-nested FIQ interrupts (a FIQ interrupt 	*/
-/* cannot itself be interrupted).											*/
-/*	                                               							*/
-/* The Fast Interrupt Vector Register (AIC_FVR) is read to clear the        */
-/* interrupt.                                                             	*/
-/*                                                                        	*/
-/* A global variable FiqCount is also incremented.							*/
-/*																			*/
-/* Remember that switch SW1 is not debounced, so the FIQ interrupt may   	*/
-/* occur more than once for a single button push.                           */
-/*																			*/
-/* Programmer: James P Lynch												*/
-/* ======================================================================== */
-AT91F_Fiq_Handler:
-
-/* Adjust LR_irq */
-				sub		lr, lr, #4
-
-/* Read the AIC Fast Interrupt Vector register to clear the interrupt */
-				ldr		r12, =AT91C_AIC_FVR
-				ldr		r11, [r12]
-				
-/* Turn on LED3 (write 0x0008 to PIOA_CODR at 0xFFFFF434) */
-				ldr		r12, =AT91C_PIOA_CODR
-				mov		r11, #0x04
-				str		r11, [r12]
-
-/* Increment the _FiqCount variable */
-				ldr		r12, =FiqCount
-				ldr		r11, [r12]
-				add		r11, r11, #1
-				str		r11, [r12]
-
-/* Return from Fiq interrupt */
-				movs	pc, lr
-
-
-/* ======================================================================== */
 /* 				  _init_reset Handler                                       */
 /*																            */
 /*	 RESET vector 0x00000000 branches to here.                              */
