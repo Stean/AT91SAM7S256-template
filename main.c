@@ -3,11 +3,6 @@
 // 
 //     Demonstration program for Atmel AT91SAM7S256-EK Evaluation Board
 //
-//     blinks LED0 (pin PA0) with an endless loop
-//     blinks LED1 (pin PA1) using timer0 interrupt (200 msec rate)
-//	   switch SW1 (PA19) triggers FIQ interrupt, turns on LED2 (Pin PA2)
-//     plenty of variables for debugger practice
-//
 //  Author:  James P Lynch  May 12, 2007
 //  *****************************************************************************
  
